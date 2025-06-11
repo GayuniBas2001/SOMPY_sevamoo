@@ -311,8 +311,6 @@ class SOM(object):
 
     def _batchtrain(self, trainlen, radiusin, radiusfin, njob=1,
                     shared_memory=False):
-        self.quant_error_history = []
-        self.topo_error_history = []
 
         radius = np.linspace(radiusin, radiusfin, trainlen)
 
