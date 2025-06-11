@@ -717,16 +717,16 @@ def _chunk_based_bmu_find(input_matrix, codebook, y2, nth=1):
     blen = min(50, dlen)
     i0 = 0
 
-    while i0+1 <= dlen:
+    while i0 < dlen:
         low = i0
         high = min(dlen, i0+blen)
-        i0 = i0+blen
-        ddata = input_matrix[low:high+1]
+        i0 = high
+        ddata = input_matrix[low:high]
         d = np.dot(codebook, ddata.T)
         d *= -2
         d += y2.reshape(nnodes, 1)
-        bmu[low:high+1, 0] = np.argpartition(d, nth, axis=0)[nth-1]
-        bmu[low:high+1, 1] = np.partition(d, nth, axis=0)[nth-1]
+        bmu[low:high, 0] = np.argpartition(d, nth, axis=0)[nth-1]
+        bmu[low:high, 1] = np.partition(d, nth, axis=0)[nth-1]
         del ddata
 
     return bmu
