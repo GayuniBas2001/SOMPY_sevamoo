@@ -142,6 +142,9 @@ class SOM(object):
         self._component_names = self.build_component_names() if component_names is None else [component_names]
         self._distance_matrix = self.calculate_map_dist()
 
+        self.quant_error_history = []
+        self.topo_error_history = []
+
     @property
     def component_names(self):
         return self._component_names
@@ -308,6 +311,9 @@ class SOM(object):
 
     def _batchtrain(self, trainlen, radiusin, radiusfin, njob=1,
                     shared_memory=False):
+        self.quant_error_history = []
+        self.topo_error_history = []
+
         radius = np.linspace(radiusin, radiusfin, trainlen)
 
         if shared_memory:
@@ -338,6 +344,14 @@ class SOM(object):
             bmu = self.find_bmu(data, njb=njob)
             self.codebook.matrix = self.update_codebook_voronoi(data, bmu,
                                                                 neighborhood)
+            # compute full squared distances
+            full_distances = np.sqrt(bmu[1] + fixed_euclidean_x2)
+            qe = np.mean(full_distances)
+            self.quant_error_history.append(qe)
+
+            # compute and track topographic error
+            te = self.calculate_topographic_error()
+            self.topo_error_history.append(te)
 
             #lbugnon: ojo! aca el bmy[1] a veces da negativo, y despues de eso se rompe...hay algo raro ahi
             qerror = (i + 1, round(time() - t1, 3),

@@ -28,8 +28,5 @@ dictConfig({
 
 
 from .sompy import SOMFactory
-# from .visualization import *
-from .codebook import *
-from .decorators import *
-from .neighborhood import *
-from .normalization import *
+from .visualization import *
+
