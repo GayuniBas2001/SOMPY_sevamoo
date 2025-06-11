@@ -369,6 +369,11 @@ class SOM(object):
         bmu[1] = np.sqrt(bmu[1] + fixed_euclidean_x2)
         self._bmu = bmu
 
+        final_qe = np.mean(bmu[1])
+        final_te = self.calculate_topographic_error()
+        self.quant_error_history.append(final_qe)
+        self.topo_error_history.append(final_te)
+
     @timeit(logging.DEBUG)
     def find_bmu(self, input_matrix, njb=1, nth=1):
         """
